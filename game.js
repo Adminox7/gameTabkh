@@ -20,13 +20,15 @@ class startGame extends Phaser.Scene {
   }
 
   preload() {
-
+    this.load.image('kitchen', './assets/kitchen.jpg');
   }
 
   create() {
+    this.add.image(400, 250, 'kitchen').setScale(0.24);
 
   }
 
+  
   update() {}
 
 
