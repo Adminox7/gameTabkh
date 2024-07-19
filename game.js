@@ -51,6 +51,7 @@ class tabkh extends Phaser.Scene {
     this.load.image('tbasl', './assets/Calque 2.png');
     this.load.image('forno2', './assets/forno2.png');
     this.load.image('bayd', './assets/bayd.png');
+    this.load.image('bayda', './assets/bayda.png');
     this.load.image('kas', './assets/kas.png');
     this.load.image('sukar', './assets/sukar.png');
     this.load.image('brad1', './assets/brad1.png');
@@ -58,17 +59,44 @@ class tabkh extends Phaser.Scene {
     this.load.image('mi9lat', './assets/mi9lat.png');
     this.load.image('zit', './assets/zit.png');
   }
-  create(){
+  create() {
     this.add.image(500, 250, 'kitchen').setScale(0.18);
     this.add.image(275, 420, 'forno2').setScale(0.04);
-    this.add.image(500, 400, 'bayd').setScale(0.025);
+    this.bayd = this.add.image(500, 400, 'bayd').setScale(0.025).setInteractive({ useHandCursor: true });
     this.add.image(800, 400, 'kas').setScale(0.02);
     this.add.image(740, 385, 'sukar').setScale(0.08);
     this.add.image(870, 408, 'brad1').setScale(0.3);
     this.add.image(300, 400, 'mi9lat').setScale(0.08);
     this.add.image(680, 370, 'zit').setScale(0.08);
-    
+
+    this.input.setDefaultCursor('pointer');
+
+    this.bayd.on('pointerdown', () => this.bayda());
   }
+
+  bayda() {
+    this.baydaImage = this.add.image(this.input.activePointer.x, this.input.activePointer.y, 'bayda').setScale(0.045);
+    this.input.on('pointermove', this.moveBayda, this);
+    this.input.on('pointerup', this.releaseBayda, this);
+  }
+
+  moveBayda(pointer) {
+    if (this.baydaImage) {
+      this.baydaImage.setPosition(pointer.x, pointer.y);
+    }
+  }
+
+  releaseBayda() {
+    this.input.off('pointermove', this.moveBayda, this);
+    this.input.off('pointerup', this.releaseBayda, this);
+  }
+
+
+
+
+
+
+
 
   update(){
 
