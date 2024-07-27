@@ -130,6 +130,7 @@ class Tabkh extends Phaser.Scene {
       this.input.on('pointerup', this.releaseBayda, this);
       this.baydaImage.setInteractive({ useHandCursor: true });
       this.baydaImage.on('pointerdown', this.animateBidamfosa, this);
+      this.zit.disableInteractive(); // Disable zit when bayda is spawned
     }
   }
 
@@ -156,6 +157,7 @@ class Tabkh extends Phaser.Scene {
           onComplete: () => {
             this.handVersBas.setVisible(false); // Hide handVersBas when the element returns to its initial position
             this.baydaImage.setVisible(false);
+            this.zit.setInteractive(); // Re-enable zit when bayda is released
           }
         });
       }
@@ -176,6 +178,8 @@ class Tabkh extends Phaser.Scene {
           bidamfosa.destroy();
           this.mi9lat.setTexture('homlitaFm9la');
           this.isCookedWithEggs = true; // Set flag to indicate that mi9lat is cooked with eggs
+          this.zit.disableInteractive(); // Disable zit when mlha is enabled
+          this.bayd.disableInteractive(); // Disable bayd when mlha is enabled
         }
       });
     }
@@ -217,6 +221,7 @@ class Tabkh extends Phaser.Scene {
         this.zit.setVisible(false);
         this.chwiyaDyalSukar.setVisible(false); // Hide the small sugar when zitMkbob appears
         this.isOiled = true; // Set flag to indicate that mi9lat is oiled
+        this.zit.disableInteractive();
       } else {
         this.zitMkbob.setVisible(false);
         this.mi9lat.setVisible(true); // Show mi9lat if zit is moved away
@@ -259,6 +264,8 @@ class Tabkh extends Phaser.Scene {
         this.mlha.setVisible(false);
         this.mi9lat.setTexture('bidblmlha');
         this.showBidataybaAfterDelay(); // Show bidatayba after 3 seconds
+        this.zit.disableInteractive(); // Disable zit when mlha is added
+        this.bayd.disableInteractive(); // Disable bayd when mlha is added
       } else {
         this.mlhaMkboba.setVisible(false);
         this.mlha.setVisible(true);
