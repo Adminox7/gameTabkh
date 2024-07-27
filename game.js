@@ -103,6 +103,10 @@ class Tabkh extends Phaser.Scene {
 
     this.mlha = this.add.image(400, 393, 'mlha').setScale(0.04).setInteractive({ useHandCursor: true });
     this.mlha.on('pointerdown', this.mlhaDown, this);
+
+    // Initialize flags
+    this.isOiled = false;
+    this.isCookedWithEggs = false;
   }
 
   showHandVersBas() {
@@ -120,11 +124,13 @@ class Tabkh extends Phaser.Scene {
   }
 
   spawnBayda() {
-    this.baydaImage = this.add.image(this.input.activePointer.x, this.input.activePointer.y, 'bayda').setScale(0.045);
-    this.input.on('pointermove', this.moveBayda, this);
-    this.input.on('pointerup', this.releaseBayda, this);
-    this.baydaImage.setInteractive({ useHandCursor: true });
-    this.baydaImage.on('pointerdown', this.animateBidamfosa, this);
+    if (this.isOiled) { // Check if mi9lat is oiled
+      this.baydaImage = this.add.image(this.input.activePointer.x, this.input.activePointer.y, 'bayda').setScale(0.045);
+      this.input.on('pointermove', this.moveBayda, this);
+      this.input.on('pointerup', this.releaseBayda, this);
+      this.baydaImage.setInteractive({ useHandCursor: true });
+      this.baydaImage.on('pointerdown', this.animateBidamfosa, this);
+    }
   }
 
   moveBayda(pointer) {
@@ -169,6 +175,7 @@ class Tabkh extends Phaser.Scene {
         onComplete: () => {
           bidamfosa.destroy();
           this.mi9lat.setTexture('homlitaFm9la');
+          this.isCookedWithEggs = true; // Set flag to indicate that mi9lat is cooked with eggs
         }
       });
     }
@@ -209,6 +216,7 @@ class Tabkh extends Phaser.Scene {
         this.mi9lat.setTexture('m9labZit'); // Hide mi9lat
         this.zit.setVisible(false);
         this.chwiyaDyalSukar.setVisible(false); // Hide the small sugar when zitMkbob appears
+        this.isOiled = true; // Set flag to indicate that mi9lat is oiled
       } else {
         this.zitMkbob.setVisible(false);
         this.mi9lat.setVisible(true); // Show mi9lat if zit is moved away
@@ -235,9 +243,11 @@ class Tabkh extends Phaser.Scene {
   }
 
   mlhaDown(pointer) {
-    this.mlha.setPosition(pointer.x, pointer.y);
-    this.input.on('pointermove', this.moveMlha, this);
-    this.input.on('pointerup', this.releaseMlha, this);
+    if (this.isCookedWithEggs) { // Check if mi9lat is cooked with eggs
+      this.mlha.setPosition(pointer.x, pointer.y);
+      this.input.on('pointermove', this.moveMlha, this);
+      this.input.on('pointerup', this.releaseMlha, this);
+    }
   }
 
   moveMlha(pointer) {
