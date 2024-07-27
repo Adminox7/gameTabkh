@@ -67,6 +67,7 @@ class Tabkh extends Phaser.Scene {
     this.load.image('mlha', './assets/mlha.png');
     this.load.image('mlhamkboba', './assets/mlha mkboba.png');
     this.load.image('bidblmlha', './assets/bidblmlha.png');
+    this.load.image('bidatayba', './assets/bidatayba.png');
   }
 
   create() {
@@ -243,10 +244,11 @@ class Tabkh extends Phaser.Scene {
     if (this.mlha) {
       this.mlha.setPosition(pointer.x, pointer.y);
       // Check if mlha is near mi9lat
-      if (Phaser.Math.Distance.Between(pointer.x, pointer.y, this.mi9lat.x, this.mi9lat.y) < 50) {
-        this.mlhaMkboba.setVisible(true).setPosition(this.mi9lat.x + 25, this.mi9lat.y - 60);
+      if (Phaser.Math.Distance.Between(pointer.x, pointer.y, this.mi9lat.x, this.mi9lat.y) < 100) {
+        this.mlhaMkboba.setVisible(true).setPosition(this.mi9lat.x + 25, this.mi9lat.y - 60).setScale(0.04);
         this.mlha.setVisible(false);
         this.mi9lat.setTexture('bidblmlha');
+        this.showBidataybaAfterDelay(); // Show bidatayba after 3 seconds
       } else {
         this.mlhaMkboba.setVisible(false);
         this.mlha.setVisible(true);
@@ -262,6 +264,12 @@ class Tabkh extends Phaser.Scene {
     this.mlha.setVisible(true);
   }
 
+  showBidataybaAfterDelay() {
+    setTimeout(() => {
+      this.mi9lat.setTexture('bidatayba');
+    }, 6000);
+  }
+
   swapPositions() {
     const tempX = this.brad1.x;
     const tempY = this.brad1.y;
@@ -271,6 +279,8 @@ class Tabkh extends Phaser.Scene {
 
   update() {}
 }
+
+
 
 
 
