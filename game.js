@@ -35,11 +35,44 @@ class startGame extends Phaser.Scene {
   update() {}
   start(){
     this.button.setInteractive({ useHandCursor: false })
+    this.scene.start('menu');
+    
+  }
+  
+}
+
+
+class menu extends Phaser.Scene {
+  constructor() {
+    super({ key: 'menu' });
+  }
+
+  preload() {
+    this.load.image('menu', './assets/menu1.png');
+    this.load.image('fotor1', './assets/الشاي و البيض .png');
+
+
+  }
+
+  create() {
+    this.add.image(400, 250, 'menu').setScale(0.3);
+    this.add.image(600, 150, 'fotor1').setScale(0.15).setInteractive({ useHandCursor: true }).on('pointerdown', () => this.start());
+
+  
+
+  }
+
+  update() {}
+  start(){
+
     this.scene.start('tabkh');
     
   }
   
 }
+
+
+
 
 class Tabkh extends Phaser.Scene {
   constructor() {
@@ -58,7 +91,7 @@ class Tabkh extends Phaser.Scene {
     this.load.image('sukar', './assets/sukar.png');
     this.load.image('chwiyaDyalSukar', './assets/chwiyaDyalSukar.png');
     this.load.image('brad1', './assets/brad1.png');
-    this.load.image('fran', './assets/fran.png');
+    this.load.image('brad2', './assets/brad2.png');
     this.load.image('mi9lat', './assets/mi9lat.png');
     this.load.image('zit', './assets/zit.png');
     this.load.image('zitMkbob', './assets/zitMkbob.png');
@@ -68,6 +101,8 @@ class Tabkh extends Phaser.Scene {
     this.load.image('mlhamkboba', './assets/mlha mkboba.png');
     this.load.image('bidblmlha', './assets/bidblmlha.png');
     this.load.image('bidatayba', './assets/bidatayba.png');
+    this.load.image('9ar3a', './assets/9ar3a.png');
+    this.load.image('9ar3am7lola', './assets/9ar3am7lola.png');
   }
 
   create() {
@@ -78,7 +113,11 @@ class Tabkh extends Phaser.Scene {
     this.sukarInitialPosition = { x: 740, y: 385 };
     this.sukar = this.add.image(this.sukarInitialPosition.x, this.sukarInitialPosition.y, 'sukar').setScale(0.08).setInteractive({ useHandCursor: true });
     this.brad1 = this.add.image(870, 408, 'brad1').setScale(0.3).setInteractive({ useHandCursor: true });
+    this.brad2 = this.add.image(870, 408, 'brad2').setScale(0.067).setVisible(false);
     this.mi9lat = this.add.image(300, 400, 'mi9lat').setScale(0.08);
+    
+    this.qar3aInitialPosition = { x: 620, y: 370 };
+    this.qar3a = this.add.image(this.qar3aInitialPosition.x, this.qar3aInitialPosition.y, '9ar3a').setScale(0.06).setInteractive({ useHandCursor: true }).setVisible(false);
 
     this.zitInitialPosition = { x: 680, y: 370 };
     this.zit = this.add.image(this.zitInitialPosition.x, this.zitInitialPosition.y, 'zit').setScale(0.08).setInteractive({ useHandCursor: true });
@@ -91,6 +130,7 @@ class Tabkh extends Phaser.Scene {
     this.zit.on('pointerdown', this.showHandVersBas, this);
     this.sukar.on('pointerdown', this.showHandVersBas, this);
     this.brad1.on('pointerdown', this.swapPositions, this);
+    this.qar3a.on('pointerdown', this.qar3aDown, this);
 
     this.handVersBas = this.add.image(250, 300, 'handVersBas').setScale(0.04).setVisible(false);
 
@@ -100,6 +140,7 @@ class Tabkh extends Phaser.Scene {
 
     // Store initial position of bayda
     this.baydaInitialPosition = { x: 500, y: 400 };
+    this.brad1InitialPosition = { x: 870, y: 408 };
 
     this.mlha = this.add.image(400, 393, 'mlha').setScale(0.04).setInteractive({ useHandCursor: true });
     this.mlha.on('pointerdown', this.mlhaDown, this);
@@ -123,14 +164,20 @@ class Tabkh extends Phaser.Scene {
     this.handVersBas.y = this.handVersBas.y - 20;
   }
 
+  showHandVersBasNear(element) {
+    this.handVersBas.setPosition(element.x + 30, element.y);
+    this.showHandVersBas();
+  }
+
   spawnBayda() {
-    if (this.isOiled) { // Check if mi9lat is oiled
+    if (this.isOiled) {
       this.baydaImage = this.add.image(this.input.activePointer.x, this.input.activePointer.y, 'bayda').setScale(0.045);
       this.input.on('pointermove', this.moveBayda, this);
       this.input.on('pointerup', this.releaseBayda, this);
       this.baydaImage.setInteractive({ useHandCursor: true });
       this.baydaImage.on('pointerdown', this.animateBidamfosa, this);
-      this.zit.disableInteractive(); // Disable zit when bayda is spawned
+      this.zit.disableInteractive();
+      this.showHandVersBasNear(this.baydaImage);
     }
   }
 
@@ -144,9 +191,8 @@ class Tabkh extends Phaser.Scene {
     this.input.off('pointermove', this.moveBayda, this);
     this.input.off('pointerup', this.releaseBayda, this);
     if (this.baydaImage) {
-      // Check if baydaImage is near mi9lat
       if (Phaser.Math.Distance.Between(this.baydaImage.x, this.baydaImage.y, this.mi9lat.x, this.mi9lat.y) < 50) {
-        this.baydaImage.setPosition(this.mi9lat.x - 20, this.mi9lat.y - 50); // Adjust position to be above mi9lat
+        this.baydaImage.setPosition(this.mi9lat.x - 20, this.mi9lat.y - 50);
       } else {
         this.tweens.add({
           targets: this.baydaImage,
@@ -155,9 +201,9 @@ class Tabkh extends Phaser.Scene {
           duration: 500,
           ease: 'Power2',
           onComplete: () => {
-            this.handVersBas.setVisible(false); // Hide handVersBas when the element returns to its initial position
+            this.handVersBas.setVisible(false);
             this.baydaImage.setVisible(false);
-            this.zit.setInteractive(); // Re-enable zit when bayda is released
+            this.zit.setInteractive();
           }
         });
       }
@@ -177,9 +223,10 @@ class Tabkh extends Phaser.Scene {
         onComplete: () => {
           bidamfosa.destroy();
           this.mi9lat.setTexture('homlitaFm9la');
-          this.isCookedWithEggs = true; // Set flag to indicate that mi9lat is cooked with eggs
-          this.zit.disableInteractive(); // Disable zit when mlha is enabled
-          this.bayd.disableInteractive(); // Disable bayd when mlha is enabled
+          this.isCookedWithEggs = true;
+          this.zit.disableInteractive();
+          this.bayd.disableInteractive();
+          this.showHandVersBasNear(this.mlha);
         }
       });
     }
@@ -192,7 +239,7 @@ class Tabkh extends Phaser.Scene {
   }
 
   moveChwiyaDyalSukar(pointer) {
-    if (this.chwiyaDyalSukar.visible) {
+    if (this.chwiyaDyalSukar) {
       this.chwiyaDyalSukar.setPosition(pointer.x, pointer.y);
     }
   }
@@ -202,7 +249,7 @@ class Tabkh extends Phaser.Scene {
     this.input.off('pointerup', this.releaseChwiyaDyalSukar, this);
     this.chwiyaDyalSukar.setVisible(false);
     this.sukar.setPosition(this.sukarInitialPosition.x, this.sukarInitialPosition.y);
-    this.handVersBas.setVisible(false); // Hide handVersBas when the element returns to its initial position
+    this.handVersBas.setVisible(false);
   }
 
   zitdown(pointer) {
@@ -214,19 +261,18 @@ class Tabkh extends Phaser.Scene {
   moveZit(pointer) {
     if (this.zit) {
       this.zit.setPosition(pointer.x, pointer.y);
-      // Check if zit is near mi9lat
       if (Phaser.Math.Distance.Between(pointer.x, pointer.y, this.mi9lat.x, this.mi9lat.y) < 100) {
-        this.zitMkbob.setVisible(true).setPosition(this.mi9lat.x + 25, this.mi9lat.y - 60); // Move zitMkbob to mi9lat's position
-        this.mi9lat.setTexture('m9labZit'); // Hide mi9lat
+        this.zitMkbob.setVisible(true).setPosition(this.mi9lat.x + 25, this.mi9lat.y - 60);
+        this.mi9lat.setTexture('m9labZit');
         this.zit.setVisible(false);
-        this.chwiyaDyalSukar.setVisible(false); // Hide the small sugar when zitMkbob appears
-        this.isOiled = true; // Set flag to indicate that mi9lat is oiled
+        this.chwiyaDyalSukar.setVisible(false);
+        this.isOiled = true;
         this.zit.disableInteractive();
+        this.showHandVersBasNear(this.bayd);
       } else {
         this.zitMkbob.setVisible(false);
-        this.mi9lat.setVisible(true); // Show mi9lat if zit is moved away
+        this.mi9lat.setVisible(true);
         this.zit.setVisible(true);
-        // Show chwiyaDyalSukar if zit is near the sugar (740, 385) within a range of 50 pixels
         if (Phaser.Math.Distance.Between(pointer.x, pointer.y, 740, 385) < 50) {
           this.chwiyaDyalSukar.setVisible(true);
           this.chwiyaDyalSukar.setPosition(pointer.x, pointer.y);
@@ -244,28 +290,28 @@ class Tabkh extends Phaser.Scene {
     this.zitMkbob.setVisible(false);
     this.zit.setVisible(true);
     this.chwiyaDyalSukar.setVisible(false);
-    this.handVersBas.setVisible(false); // Hide handVersBas when the element returns to its initial position
+    this.handVersBas.setVisible(false);
   }
 
   mlhaDown(pointer) {
-    if (this.isCookedWithEggs) { // Check if mi9lat is cooked with eggs
+    if (this.isCookedWithEggs) {
       this.mlha.setPosition(pointer.x, pointer.y);
       this.input.on('pointermove', this.moveMlha, this);
       this.input.on('pointerup', this.releaseMlha, this);
+      this.showHandVersBasNear(this.mlha);
     }
   }
 
   moveMlha(pointer) {
     if (this.mlha) {
       this.mlha.setPosition(pointer.x, pointer.y);
-      // Check if mlha is near mi9lat
       if (Phaser.Math.Distance.Between(pointer.x, pointer.y, this.mi9lat.x, this.mi9lat.y) < 100) {
         this.mlhaMkboba.setVisible(true).setPosition(this.mi9lat.x + 25, this.mi9lat.y - 60).setScale(0.04);
         this.mlha.setVisible(false);
         this.mi9lat.setTexture('bidblmlha');
-        this.showBidataybaAfterDelay(); // Show bidatayba after 3 seconds
-        this.zit.disableInteractive(); // Disable zit when mlha is added
-        this.bayd.disableInteractive(); // Disable bayd when mlha is added
+        this.showBidataybaAfterDelay();
+        this.zit.disableInteractive();
+        this.bayd.disableInteractive();
       } else {
         this.mlhaMkboba.setVisible(false);
         this.mlha.setVisible(true);
@@ -279,23 +325,61 @@ class Tabkh extends Phaser.Scene {
     this.mlha.setPosition(400, 393);
     this.mlhaMkboba.setVisible(false);
     this.mlha.setVisible(true);
+    this.handVersBas.setVisible(false);
   }
 
   showBidataybaAfterDelay() {
     setTimeout(() => {
       this.mi9lat.setTexture('bidatayba');
-    }, 6000);
+    }, 5000);
   }
 
   swapPositions() {
-    const tempX = this.brad1.x;
-    const tempY = this.brad1.y;
-    this.brad1.setPosition(this.bayd.x, this.bayd.y);
-    this.bayd.setPosition(tempX, tempY);
+    // Swap the positions of bayd and brad2
+    const tempPosition = { x: this.bayd.x, y: this.bayd.y };
+    this.bayd.setPosition(this.brad2.x-20, this.brad2.y+10);
+    this.brad2.setPosition(tempPosition.x, tempPosition.y);
+
+    // Hide brad1 and show brad2
+    this.brad1.setVisible(false);
+    this.brad2.setVisible(true);
+    
+    // Make qar3a visible and interactive
+    this.qar3a.setVisible(true).setInteractive();
   }
 
-  update() {}
+  qar3aDown(pointer) {
+    this.qar3a.setPosition(pointer.x, pointer.y);
+    this.input.on('pointermove', this.moveQar3a, this);
+    this.input.on('pointerup', this.releaseQar3a, this);
+  }
+
+  moveQar3a(pointer) {
+    if (this.qar3a) {
+      this.qar3a.setPosition(pointer.x, pointer.y);
+      if (Phaser.Math.Distance.Between(pointer.x, pointer.y, this.brad2.x, this.brad2.y) < 100) {
+        this.qar3a.setTexture('9ar3am7lola');
+      } else {
+        this.qar3a.setTexture('9ar3a');
+      }
+    }
+  }
+
+  releaseQar3a() {
+    this.input.off('pointermove', this.moveQar3a, this);
+    this.input.off('pointerup', this.releaseQar3a, this);
+    this.qar3a.setPosition(this.qar3aInitialPosition.x, this.qar3aInitialPosition.y);
+    this.qar3a.setTexture('9ar3a');
+  }
+
+  update() {
+    if (this.zit.input.enabled && !this.handVersBas.visible) {
+      this.showHandVersBasNear(this.zit);
+    }
+  }
 }
+
+
 
 
 
@@ -306,4 +390,5 @@ class Tabkh extends Phaser.Scene {
 
 game.scene.add('tabkh',Tabkh)
 game.scene.add('startGame', startGame);
+game.scene.add('menu', menu);
 game.scene.start('startGame');
